@@ -1,10 +1,10 @@
 #include <iostream>
-#include"Digital_address_book.h"
+#include"address_book_class.h"
 using namespace std;
 
 int main()
 {
-    Digital_address_book Book;
-    Book.Run();
+    Address_book book;
+    book.Run();
     return 0;
 }
