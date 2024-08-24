@@ -117,16 +117,17 @@ void Manager::Edit_contact(int id){
 
     }
     else if(option==2){
-            if(Manager::mp[id].get_addresses().size()!=0){
             Address add;
-   std:: cout<<"Editing addresses for "<<Manager::mp[id].get_personal_details().get_first_name()<<" "<<Manager::mp[id].get_personal_details().get_last_name()<<":\n";
-        int op=Manager::mn.Edit_address_menu();
+    int op=Manager::mn.Edit_address_menu();
         if(op==1){
                 cin.ignore();
                     add.read_address();
                     Manager::mp[id].get_addresses()[add.get_place()]=add;
         }
-        else{
+         else{
+            if(Manager::mp[id].get_addresses().size()!=0){
+   std:: cout<<"Editing addresses for "<<Manager::mp[id].get_personal_details().get_first_name()<<" "<<Manager::mp[id].get_personal_details().get_last_name()<<":\n";
+
             std:: cout<<"Enter the key of address you want to edit: ";
         string key;
         cin.ignore();
@@ -168,20 +169,24 @@ void Manager::Edit_contact(int id){
 
         }
         }
+        else
+            cout<<"there is not any address to Edit/Delete"<<endl;
         }
+
     }
 
         else if(option==3){
-                if(Manager::mp[id].get_emails().size()!=0){
                 Email eml;
-             std::cout<<"Editing emails for "<<Manager::mp[id].get_personal_details().get_first_name()<<" "<<Manager::mp[id].get_personal_details().get_last_name()<<":\n";
-               int op=Manager::mn.Edit_email_menu();
+         int op=Manager::mn.Edit_email_menu();
              if(op==1){
                     cin.ignore();
                    eml.read_email();
                     Manager::mp[id].get_emails()[eml.get_email()]=eml;
              }
-       else{
+             else{
+                if(Manager::mp[id].get_emails().size()!=0){
+             std::cout<<"Editing emails for "<<Manager::mp[id].get_personal_details().get_first_name()<<" "<<Manager::mp[id].get_personal_details().get_last_name()<<":\n";
+
           std:: cout<<"Enter key of email you want to edit: ";
         string key;
         cin.ignore();
@@ -221,20 +226,24 @@ void Manager::Edit_contact(int id){
            }
 
         }
+        else
+            cout<<"there is not any email to Edit/Delete"<<endl;
         }
+
         }
 
         else {
-                if( Manager::mp[id].get_phones().size()!=0){
-                Phone_Number phn;
-            std::cout<<"Editing phone numbers  for "<<Manager::mp[id].get_personal_details().get_first_name()<<" "<<Manager::mp[id].get_personal_details().get_last_name()<<":\n";
-        int op=Manager::mn.Edit_phone_menu();
+             Phone_Number phn;
+                int op=Manager::mn.Edit_phone_menu();
                   if(op==1){
                         cin.ignore();
                     phn.read_phone();
                     Manager::mp[id].get_phones()[phn.get_phone()]=phn;
                   }
-                  else{
+                   else{
+                if( Manager::mp[id].get_phones().size()!=0){
+            std::cout<<"Editing phone numbers  for "<<Manager::mp[id].get_personal_details().get_first_name()<<" "<<Manager::mp[id].get_personal_details().get_last_name()<<":\n";
+
                      std:: cout<<"Enter key of phone number you want to edit: ";
                      string key;
                      cin.ignore();
@@ -274,50 +283,55 @@ void Manager::Edit_contact(int id){
             }
 
            }
+           else
+            cout<<"there is not any phone to Edit/Delete"<<endl;
         }
+
     }
     }
     else
         cout<<"the contact with this ID is not found ,try another one"<<endl;
 }
 
-bool Manager::found(string str){
-    bool fnd=false;
-    if(str==Manager::current_contact.get_personal_details().get_first_name()||str==Manager::current_contact.get_personal_details().get_last_name()||str==Manager::current_contact.get_personal_details().get_city()||str==Manager::current_contact.get_personal_details().get_gender())
-       fnd=true;
-       auto adrs=Manager::current_contact.get_addresses().find(str);
-       if(adrs!=Manager::current_contact.get_addresses().end()){
-            fnd=true;
-       }
-       auto eml=Manager::current_contact.get_emails().find(str);
-       if(eml!=Manager::current_contact.get_emails().end())
-        fnd=true;
-       auto phne=Manager::current_contact.get_phones().find(str);
-       if(phne!=Manager::current_contact.get_phones().end())
-        fnd=true;
 
-        return fnd;
-
-}
 void Manager::Search_contact(){
     std::cout<<"Enter search term \ ( name,place,phone,email,etc.)\: ";
     string str;
     cin.ignore();
    std:: getline(cin,str);
-
-  for(auto &it:Manager::mp){
-       bool ok=Manager::found(str);
-       if(ok)
-        it.second.display();
-       else{
-        cout<<"contact with this term is not found"<<endl;
+       bool found=false;
+       for(auto&it :Manager::mp){
+            auto&inner=it.second;
+    if(str==inner.get_personal_details().get_first_name()||str==inner.get_personal_details().get_last_name()||str==inner.get_personal_details().get_city()||str==inner.get_personal_details().get_gender()){
+            found=true;
+       inner.display();
+    }
+       auto adrs=inner.get_addresses().find(str);
+       if(adrs!=inner.get_addresses().end()){
+            found=true;
+            inner.display();
        }
+       auto eml=inner.get_emails().find(str);
+       if(eml!=inner.get_emails().end()){
+           found=true;
+            inner.display();
+       }
+       auto phne=inner.get_phones().find(str);
+       if(phne!=inner.get_phones().end()){
+           found=true;
+       inner.display();
+       }
+    }
 
-  }
+  if(found){
     cout<<"Enter contact id you want to display: ";
     int id;
     cin>>id;
     Manager::mp[id].print();
+  }
+  else{
+        cout<<"contact with this term is not found"<<endl;
+       }
 
 
 }
